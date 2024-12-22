@@ -1,0 +1,33 @@
+1rsy.pdb                                                                        
+heteroatoms excluded
+Initial optimiz. in hydrocarbon slab with approximate energy functions:
+emin=    -8.2 slab thickn.=    18.0
+    0 possible transmembrane secondary structure segments
+Possible transmembrane without TM secondary structure, checking...
+#1rsy;A; 23;173,234
+1rsy.pdb   emin=    -4.4 thickn=  2.6+-10.0 tilt=    23.+-   20.
+1gzm.pdb                                                                        
+heteroatoms excluded
+Initial optimiz. in hydrocarbon slab with approximate energy functions:
+emin=   -97.2 slab thickn.=    30.0
+    7 possible transmembrane secondary structure segments
+   1 A   29   68  40
+   2 A   69  100  32
+   3 A  108  140  33
+   4 A  150  173  24
+   5 A  198  232  35
+   6 A  245  278  34
+   7 A  285  313  29
+Possible transmembrane protein, checking... 
+N interact. lipids:  24
+#1gzm;A; 14;35-63,71-99,105,108-134,148,151-173,175-176,178,181,183,185-189,191,201-224,253-277,286-308,313,321
+A  35  60    35.  -17.3
+A  72  99    29.   -7.0
+A 109 133    30.   -4.1
+A 151 173     9.  -15.0
+A 202 224    14.  -15.5
+A 253 277    14.  -14.0
+A 286 308    20.   -9.7
+TMH contribution:   -82.6
+Tilt angle:   11.5
+1gzm.pdb   emin=   -77.1 thickn= 31.8+- 1.6 tilt=    11.+-    1.
