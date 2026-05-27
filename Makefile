@@ -4,6 +4,9 @@
 #SHELL = /bin/sh
 #F77FLAGS =  -check_bounds
 
+FFLAGS=-O -g
+LDFLAGS=-g
+
 OBJS = opm.o min.o rmsd.o solva.o readpdb.o read_small.o watface.o \
 	 tilting.o locate.o profile.o hbcor.o deftm.o orient.o find_segm.o
 EXEC = immers
@@ -11,7 +14,10 @@ EXEC = immers
 FC=gfortran 
 
 $(EXEC): $(OBJS)
-	 $(FC) -O -g -o $(EXEC) $(OBJS)
+	 $(FC)  $(LDFLAGS) -o $(EXEC) $(OBJS)
 
-.f.o:
-	 $(FC) $(F77FLAGS) -O -c $<
+%.o: %.f
+	 $(FC) $(FFLAGS) -c $<
+
+clean:
+	-rm $(EXEC) $(OBJS)
