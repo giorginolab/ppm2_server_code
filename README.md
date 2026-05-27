@@ -10,12 +10,19 @@ I am keeping the changes minimal, with a wrapper to workaround the special $pwd 
 At the time of forking, the license was GPL v3.
 
 
-## Testing
+## Test
 
-This should work
+This should work on most platforms:
 
     make
     ./immers <test.inp >test.out
+
+and produce the files `1gzmout.pdb` and `1rsyout.pdb`, plus the (hopefully expected) 
+
+    warning Note: The following floating-point exceptions are signalling: IEEE_INVALID_FLAG IEEE_UNDERFLOW_FLAG
+
+The outputs for an M1 MacOS with gfortran 15.2.0 are in `ref`.
+They differ from the original reference ones (now in `ref_orig`) by fractions of an Angstrom.
 
 ## References
 
