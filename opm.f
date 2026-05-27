@@ -294,7 +294,7 @@ c
       end if
 c
       write (*,'(a10,1x,''emin='',f8.1,'' thickn='',f5.1,
-     *''+-'',f4.1,'' tilt='',f7.0''+-'',f6.0)') 
+     *''+-'',f4.1,'' tilt='',f7.0,''+-'',f6.0)') 
      *pdbtempl(1:10),ener,dmm,d12,tiltot,t12
       itilt=int(tiltot)
       it12=int(t12)
