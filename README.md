@@ -10,6 +10,13 @@ I am keeping the changes minimal, with a wrapper to workaround the special $pwd 
 At the time of forking, the license was GPL v3.
 
 
+## Testing
+
+This should work
+
+    make
+    ./immers <test.inp >test.out
+
 ## References
 
 * Lomize M.A., Pogozheva I,D, Joo H., Mosberg H.I., Lomize A.L. OPM database and PPM web server: resources for positioning of proteins in membranes. Nucleic Acids Res., 2012, 40 (Database issue):D370-376 
