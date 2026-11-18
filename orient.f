@@ -8,6 +8,7 @@ c
 c
       real xyz(3,1),solv(1),v(3),xyzb(3,maxat)
 c
+      save xyzb
       data step1/2./,step2/0.5/,step3/0.1/
 c
 c     Calculate center of masses and move coordinates
@@ -70,17 +71,32 @@ c
       common/params/ accs(maxat),iat(maxat),dip(maxat),eioniz(maxat),
      *  charge(maxat),asaref(maxat),hbond(maxat),charge2(maxat)
 c
-      real xyzb(1),asares(1),xyzc(3,maxat),eslice(1000),solv(1)
-      integer ienvat(maxat)
+      real xyzb(*),eslice(1000),solv(*)
+      real, allocatable :: xyzc(:,:),angles(:)
+      integer, allocatable :: ienvat(:)
 c
       data pi/3.14159/
 c
-      alpha=1.11
+c     Retain the original real DO sequence in the refinement scan.
+      nteta=0
+      do teta0=teta1,teta2,stepteta
+         nteta=nteta+1
+      end do
+      allocate(angles(nteta))
+      iteta=0
+      do teta0=teta1,teta2,stepteta
+         iteta=iteta+1
+         angles(iteta)=teta0*pi/180.
+      end do
       emin=100.
+!$omp parallel default(shared) private(phi0,phi,iteta,teta,xyzc,
+!$omp& ienvat,eslice,nslice,i,zc,m,nwind,i1,e,j)
+      allocate(xyzc(3,nat),ienvat(nat))
       do phi0=phi1,phi2,stepphi
          phi=phi0*pi/180.
-         do teta0=teta1,teta2,stepteta
-            teta=teta0*pi/180.
+!$omp do ordered schedule(static,1)
+         do iteta=1,nteta
+            teta=angles(iteta)
             call tilting (phi,teta,nat,xyzb,xyzc)
 c           write (*,'(2f8.2)') phi0,teta0
             call rectang (nat,xyzc,ienvat,accs)
@@ -96,6 +112,8 @@ c           write (*,'(2f8.2)') phi0,teta0
                end if
             end do
 c
+c           The 0.01 update threshold depends on all earlier angles.
+!$omp ordered
             do nwind=18,40
                do i1=1,nslice-nwind
                   e=0. 
@@ -111,8 +129,12 @@ c
                   end if
                end do
             end do
+!$omp end ordered
          end do
+!$omp end do
       end do
+      deallocate(xyzc,ienvat)
+!$omp end parallel
       dmax=float(nwindmin)
       zcenter=float(imin)-140.5+dmax/2.
       phimax=phimax*180./pi

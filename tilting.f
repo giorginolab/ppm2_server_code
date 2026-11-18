@@ -1,4 +1,4 @@
-      subroutine tilting (phi,teta,nat,xyz,xyzc)
+      recursive subroutine tilting (phi,teta,nat,xyz,xyzc)
 c     ------------------------------------------
 c     rotate coordinate set 'xyz' by angle 'teta' around axis in OXY
 c     plane that forms phi anglr with OX axis

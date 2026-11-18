@@ -19,7 +19,7 @@ c
      *  charge(maxat),asaref(maxat),hbond(maxat),charge2(maxat)
 c
       real xyz(3,1),xyzc(3,1),solv(1),
-     * xyzb(3,maxat),vc(3),vmin(3),emem(maxmem),
+     * vc(3),vmin(3),emem(maxmem),
      * E2(2),DS(maxvar),EST(8),BMIN(maxvar),HPR(maxhpr),ESTM(8),
      * GR(maxvar),VAR(maxvar,2),GRM(maxvar),
      * tetaar(maxsolut),shiftar(maxsolut),
@@ -27,6 +27,8 @@ c
 c
       integer numres(1),KOD(8),KODM(8)
 c
+      real, allocatable :: rotated(:,:)
+      save emem,tetaar,shiftar,enerar,phiar
       character*80 namfile,pdbtempl
       character*4 namat(1),namres(1)
       character*1 namsu(1)
@@ -55,23 +57,27 @@ c
 c     Grid scan without local energy minimization.
 c     All energies are placed to array 'emem'
 c
-      m=0
-      do phi0=0.,179.,step1
-         phi=phi0*pi/180.
-         do teta0=-90.,90.,step2
-            teta=teta0*pi/180.
-            call tilting (phi,teta,nat,xyz,xyzc)
+      nphi=int(179./step1)+1
+      nteta=int(180./step2)+1
+      nshift=int(2.*shint/shstep)+1
+      if(nphi*nteta*nshift.gt.maxmem)
+     *   stop 'Too many steps of grid scan'
+      dmem=dmembr/2.
+!$omp parallel default(shared) private(rotated,iphi,iteta,phi,teta,
+!$omp& sh,m,en,i,zc,al,c,etot,d_etot)
+      allocate(rotated(3,nat))
+!$omp do collapse(2) schedule(static)
+      do iphi=0,nphi-1
+         do iteta=0,nteta-1
+            phi=(iphi*step1)*pi/180.
+            teta=(-90.+iteta*step2)*pi/180.
+            call tilting (phi,teta,nat,xyz,rotated)
+            m=(iphi*nteta+iteta)*nshift
             do sh=-shint,shint,shstep
-               do i=1,nat
-                  xyzb(1,i)=xyzc(1,i)
-                  xyzb(2,i)=xyzc(2,i)
-                  xyzb(3,i)=xyzc(3,i)+sh
-               end do
-               dmem=dmembr/2.
                en=0.
                do i=1,nat
                   if(accs(i).gt.0.) then
-                     zc=xyzb(3,i)
+                     zc=rotated(3,i)+sh
                      if(ifunc.eq.1) then
                         al=alpha*(abs(zc)-dmem)
                         c=1./(1.+exp(al))
@@ -85,14 +91,14 @@ c
                   end if
                end do
                m=m+1
-               if(m.gt.maxmem) then
-                  write (*,'(''Too many steps of grid scan'')')
-                  stop
-               end if
                emem(m)=en
             end do
          end do
       end do
+c
+!$omp end do
+      deallocate(rotated)
+!$omp end parallel
 c
 c     Lowest (reference) energy obtained during grid scan - 'eref'
 c

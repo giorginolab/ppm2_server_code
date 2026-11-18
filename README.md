@@ -9,6 +9,12 @@ I am keeping the changes minimal, with a wrapper to work around `immers`
 expecting to run from a particular working directory layout.
 
 
+The default build uses OpenMP for the preliminary orientation search, the membrane-position grid scan, and
+the per-atom solvent-accessible surface calculation. Set
+`OMP_NUM_THREADS` to control the number of threads, for example
+`OMP_NUM_THREADS=4 make test`. To build without OpenMP, use
+`make -B OMPFLAGS=`.
+
 ## Test
 
 This should work on most platforms:

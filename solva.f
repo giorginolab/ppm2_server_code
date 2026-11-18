@@ -34,6 +34,7 @@ c
       real       probe, zslice, accs(maxs), b
       real       trig_test
 c
+      save natm,itab,cube,rad,radsq
       data xmin,ymin,zmin,xmax,ymax,zmax/3*9999.,3*-9999./
 c
 c     initialise variables, constants
@@ -100,6 +101,9 @@ c
 c     -- Process each atom in turn
 c
       nzp=1./zslice+0.5
+!$omp parallel do default(private) schedule(static)
+!$omp& shared(nats,cube,xyz,rad,radsq,jidim,idim,kjidim,itab,natm,
+!$omp& ict,nzp,pix2,pi,accs) firstprivate(karc)
       do  ir = 1, nats
          kji=cube(ir)
          io=0

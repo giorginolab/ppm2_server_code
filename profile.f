@@ -537,7 +537,7 @@ c
       return
       end
 c
-      subroutine ener_at(zcur,accs,dipol,iat,charge1,charge2,
+      recursive subroutine ener_at(zcur,accs,dipol,iat,charge1,charge2,
      *  eioniz,asaref,hbond,etot,d_etot)
 c     -----------------------------------------------------
       parameter (ntypes=17)

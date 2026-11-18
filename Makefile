@@ -6,6 +6,7 @@
 
 FFLAGS=-O -g
 LDFLAGS=-g
+OMPFLAGS=-fopenmp
 
 OBJS = opm.o min.o rmsd.o solva.o readpdb.o read_small.o watface.o \
 	 tilting.o locate.o profile.o hbcor.o deftm.o orient.o find_segm.o
@@ -14,7 +15,9 @@ EXEC = immers
 FC=gfortran 
 
 $(EXEC): $(OBJS)
-	 $(FC)  $(LDFLAGS) -o $(EXEC) $(OBJS)
+	 $(FC) $(OMPFLAGS) $(LDFLAGS) -o $(EXEC) $(OBJS)
+
+locate.o solva.o orient.o: override FFLAGS += $(OMPFLAGS)
 
 %.o: %.f
 	 $(FC) $(FFLAGS) -c $<
